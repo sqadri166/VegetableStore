@@ -47,7 +47,6 @@ const fetchPostProduct = async (prodId:any) => {
             throw error;
           });
           setProduct(currentProduct[0]);                
-          console.log(product);
 
         }
  
@@ -72,7 +71,12 @@ return (
           <Text style={styles.title}>Total Bags Available to Buy : {product.TotalBagsAvailable} </Text>
           <Text style={styles.title}>FreshNess Level : {product.ConditionNotes} </Text>
           <Text style={styles.title}> Sweetness Level :{product.SweetnessLevel} </Text>
-         
+          <Button
+          title="Add Another Product" 
+          color="green"
+          onPress={() =>  {
+            navigation.push('Listings')}
+          }/>
               </View>
               <View style={styles.fixToText}>
         <Button
@@ -82,7 +86,9 @@ return (
         <Button
           title="Not Interested"
             color="maroon"
-          onPress={() => Alert.alert('Right button pressed')}
+            onPress={() => {
+            navigation.push('Listings')}
+          }
         />
       </View>
 
@@ -175,7 +181,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         left: 120 ,
         fontWeight:"bold",
-        top: -50,
+        top: -30,
       },
     
     viewcontainer: {
