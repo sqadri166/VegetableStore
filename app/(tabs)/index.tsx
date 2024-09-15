@@ -25,7 +25,7 @@ const SubzeeBackground = () => (
 export default function Home() {
   
 const navigation = useNavigation();
-const GoToProfile = () => { navigation.navigate('Profile') }
+const GoToProfile = () => { navigation.navigate('Listings') }
 
 
   return (

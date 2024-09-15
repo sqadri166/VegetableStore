@@ -40,7 +40,29 @@ export default function TabLayout() {
             <TabBarIcon name={focused ? 'settings' : 'settings'} color={color} />
           ),
         }}
+      /> 
+      <Tabs.Screen
+        name="ProductListings"
+        options={{
+          title: 'Vegetables',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'book' : 'book'} color={color} />
+          ),
+        }}
       />
+
+<Tabs.Screen
+        name="ProductDetails"
+        options={{
+          title: 'ProductDetails',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'book' : 'book'} color={color} />
+          ),
+        }}
+      />
+      
     </Tabs>
+
+    
   );
 }
