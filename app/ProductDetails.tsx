@@ -80,7 +80,7 @@ return (
           style={styles.loginScreenButton}
           onPress={() => navigation.push('Listings')}
           >
-          <Text style={styles.loginText}>Add To Cart</Text>
+          <Text style={styles.cartText}>Add To Cart</Text>
  </TouchableOpacity>
               
               <TouchableOpacity
@@ -94,7 +94,7 @@ return (
           style={styles.NotScreenButton}
           onPress={() => navigation.push('Listings')}
           >
-          <Text style={styles.loginText}>Show More Categories of {product.VegetableName}</Text>
+          <Text style={styles.loginText}>Categories of {product.VegetableName}</Text>
  </TouchableOpacity>
        </View>
 
@@ -173,9 +173,14 @@ const styles = StyleSheet.create({
        marginTop:50,
         paddingTop:10,
         paddingBottom:10,
+
         backgroundColor:'darkcyan',
         borderRadius:10,
         borderWidth: 1,
+        height:50 ,
+        width:280,
+        
+        
         flexDirection: 'row',
         justifyContent: 'space-between',
         borderColor: '#fff'
@@ -187,9 +192,14 @@ const styles = StyleSheet.create({
        marginTop:50,
         paddingTop:10,
         paddingBottom:10,
-        backgroundColor:'darkblue',
+
+        backgroundColor:'darkgreen',
         borderRadius:10,
         borderWidth: 1,
+        height:50 ,
+        width:280,
+        
+        
         flexDirection: 'row',
         justifyContent: 'space-between',
         borderColor: '#fff'
@@ -201,9 +211,13 @@ const styles = StyleSheet.create({
        marginTop:50,
         paddingTop:10,
         paddingBottom:10,
+
         backgroundColor:'maroon',
         borderRadius:10,
         borderWidth: 1,
+        height:50 ,
+        width:280,
+        
         flexDirection: 'row',
         justifyContent: 'space-between',
         borderColor: '#fff'
@@ -231,9 +245,16 @@ const styles = StyleSheet.create({
           color:'white',
           textAlign:'center',
           fontWeight:"bold",
-          paddingLeft : 10,
+          paddingLeft : 75 ,
           paddingRight : 10
       },
+      cartText:{
+        color:'white',
+        textAlign:'center',
+        fontWeight:"bold",
+        paddingLeft : 100 ,
+        paddingRight : 10
+    },
 
       rightcontainer: {
         flex: 1,
