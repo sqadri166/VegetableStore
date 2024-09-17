@@ -13,7 +13,7 @@ const image = {uri: 'merypyarisubzee.png'};
 const SubzeeBackground = () => (
   <View style={styles.container}>
     <ImageBackground source={require('../../assets/images/merypyarisubzee.png')} resizeMode="cover" style={styles.image}>
-      <Text style={styles.text}>Veg Subzi Market</Text>
+      <Text style={styles.text}>Owais Whole Sales Food Item Delivery </Text>
 
     </ImageBackground>
   

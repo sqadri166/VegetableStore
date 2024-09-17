@@ -9,7 +9,8 @@ import {
   StyleSheet,
   StatusBar,
   ActivityIndicator,
-  Alert
+  Alert,
+  TouchableOpacity
   } from 'react-native';
 import {db} from '../Firebase';
 import { collection, getDocs ,doc , Firestore } from "firebase/firestore";
@@ -29,13 +30,13 @@ const ProductDetails = ({ route,navigation }) => {
 
 const fetchPostProduct = async (prodId:any) => {
 
-    console.log(prodId); 
     //setProduct(currentproduct);                
     var currentProduct:any;
     await getDocs(collection(db,"/Vegetables"))
         .then((querySnapshot)=>{               
             const newData:any = querySnapshot.docs
                 .map((doc) => ({...doc.data(), id:doc.id }));
+                
                 currentProduct = newData.filter(function(el:any) {
                     return el.id === productId;
                   });
@@ -55,42 +56,47 @@ return (
        
            <View style={styles.container}>
          <View style={styles.card}>
+         <Text style={styles.titleName} >{product.VegetableName}
+          
+
+          </Text>
+         
          <Image 
     source={{uri:product.ImageName} } 
                  style={styles.thumb}
                  resizeMode="center"
                
                />
+           <Text style={styles.title}> Price Per Bag: {product.PricePerPoundOrEach} </Text>
+          
+          <Text style={styles.title}>Total Bags Available to Buy: {product.TotalBagsAvailable} </Text>
+          <Text style={styles.title}>Bag Size: {product.BagSize} </Text>
+          
+         
             </View>   
            <View style={styles.rightcontainer}>
-           <Text style={styles.titleName} >{product.VegetableName}
           
-
-          </Text>
-          <Text style={styles.title}>Market Search :{product.Description} </Text>
-          <Text style={styles.title}>Total Bags Available to Buy : {product.TotalBagsAvailable} </Text>
-          <Text style={styles.title}>FreshNess Level : {product.ConditionNotes} </Text>
-          <Text style={styles.title}> Sweetness Level :{product.SweetnessLevel} </Text>
-          <Button
-          title="Add Another Product" 
-          color="green"
-          onPress={() =>  {
-            navigation.push('Listings')}
-          }/>
-              </View>
-              <View style={styles.fixToText}>
-        <Button
-          title="Add to Cart"
-          onPress={() => Alert.alert('Left button pressed')}
-        />
-        <Button
-          title="Not Interested"
-            color="maroon"
-            onPress={() => {
-            navigation.push('Listings')}
-          }
-        />
-      </View>
+           <TouchableOpacity
+          style={styles.loginScreenButton}
+          onPress={() => navigation.push('Listings')}
+          >
+          <Text style={styles.loginText}>Add To Cart</Text>
+ </TouchableOpacity>
+              
+              <TouchableOpacity
+          style={styles.ShowMoreScreenButton}
+          onPress={() => navigation.push('Listings')}
+          >
+          <Text style={styles.loginText}>View More Items</Text>
+ </TouchableOpacity> 
+        
+        <TouchableOpacity
+          style={styles.NotScreenButton}
+          onPress={() => navigation.push('Listings')}
+          >
+          <Text style={styles.loginText}>Show More Categories of {product.VegetableName}</Text>
+ </TouchableOpacity>
+       </View>
 
          
          
@@ -161,10 +167,80 @@ const styles = StyleSheet.create({
         marginTop: StatusBar.currentHeight || 15,
       },
 
+      ShowMoreScreenButton:{
+        marginRight:40,
+        marginLeft:40,
+       marginTop:50,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'darkcyan',
+        borderRadius:10,
+        borderWidth: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderColor: '#fff'
+      },
+
+      loginScreenButton:{
+        marginRight:40,
+        marginLeft:40,
+       marginTop:50,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'darkblue',
+        borderRadius:10,
+        borderWidth: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderColor: '#fff'
+      },
+
+      NotScreenButton:{
+        marginRight:40,
+        marginLeft:40,
+       marginTop:50,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'maroon',
+        borderRadius:10,
+        borderWidth: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderColor: '#fff'
+      },
+
+      NotIntScreenButton : {
+        marginRight:40,
+        marginLeft:40,
+       marginTop:10,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'maroon',
+        borderRadius:1,
+        borderWidth: 1,
+        borderColor: '#fff'
+      },
+      notIntText:{
+        color:'white',
+        textAlign:'center',
+        paddingLeft : 10,
+        paddingRight : 10
+    },
+
+      loginText:{
+          color:'white',
+          textAlign:'center',
+          fontWeight:"bold",
+          paddingLeft : 10,
+          paddingRight : 10
+      },
+
       rightcontainer: {
         flex: 1,
-        marginTop: StatusBar.currentHeight || 15,
-        marginLeft: 0
+        
+        marginTop: -100,
+        marginLeft: 25,
+        justifyContent:"center"
       } ,
       item: {
         padding: 20,
@@ -174,14 +250,16 @@ const styles = StyleSheet.create({
       title: {
         fontSize: 16,
         left: 5 ,
-        fontWeight: "500"
+        fontWeight: "500" ,
+          backgroundColor:"lightblue"
+        
 
       },
       titleName: {
         fontSize: 32,
-        left: 120 ,
+        marginLeft: 120 ,
         fontWeight:"bold",
-        top: -30,
+        marginBottom: 10,
       },
     
     viewcontainer: {

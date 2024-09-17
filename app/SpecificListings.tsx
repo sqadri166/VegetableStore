@@ -16,7 +16,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { converBase64ToImage } from 'convert-base64-to-image';
 import { useNavigation } from 'expo-router';
 
-const ProductListings = ({ navigation }) => {
+const SpecificListings = ({ navigation }) => {
   const [products, setProducts] = useState([]);
 
   const fetchPost = async () => {
@@ -166,4 +166,4 @@ const styles = StyleSheet.create({
     }
   });
 
-  export default ProductListings;
+  export default SpecificListings;
