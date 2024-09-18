@@ -60,6 +60,16 @@ export default function TabLayout() {
           ),
         }}
       />
+
+<Tabs.Screen
+        name="VoiceAssitance"
+        options={{
+          title: 'VoiceAssitance',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'book' : 'book'} color={color} />
+          ),
+        }}
+      />
       
     </Tabs>
 

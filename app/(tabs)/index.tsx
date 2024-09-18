@@ -1,5 +1,7 @@
 import { Link, Stack, useNavigation } from 'expo-router';
 import { Image, Text, View, StyleSheet, ImageBackground, Button, TouchableOpacity } from 'react-native';
+import Tts from 'react-native-tts';
+import * as Speech from 'expo-speech';
 
 function LogoTitle() {
   return (
@@ -15,7 +17,7 @@ const SubzeeBackground = () => (
 
   <View style={styles.container}>
     <ImageBackground source={require('../../assets/images/merypyarisubzee.png')} resizeMode="cover" style={styles.image}>
-      <Text style={styles.text}>Owais Whole Sales Food Item Delivery </Text>
+      <Text style={styles.text}>Whole Sales Food Item Delivery </Text>
 
     </ImageBackground>
   
@@ -32,6 +34,11 @@ const SubzeeBackground = () => (
 export default function Home() {
   const navigation = useNavigation();
  const GoToProfile = () => { navigation.navigate('Listings') }
+ const PleaseSpeak =() => {Speech.speak('You are entering into voice chat ordering system , please use proper simple sentences for example  I want to order 5 bags of Tomatoes or I would like to order , order delivery for 5 bags of Tomatoes , or whats the price' )
+  navigation.navigate('VoiceAssistance')
+
+
+ }
 
 
   return (
@@ -48,7 +55,7 @@ export default function Home() {
   <View>
   <TouchableOpacity
            style={styles.SpeakMoreScreenButton}
-           onPress={GoToProfile}>
+           onPress={PleaseSpeak}>
            
            <Text style={styles.voicenText}>Click to Open Voice Chat</Text>
   </TouchableOpacity> 

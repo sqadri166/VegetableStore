@@ -67,10 +67,12 @@ return (
                  resizeMode="center"
                
                />
-           <Text style={styles.title}> Price Per Bag: {product.PricePerPoundOrEach} </Text>
+           <View style = {styles.cardOnText}>
+              <Text style={styles.textDisplay}> Price : {product.PricePerPoundOrEach} USD </Text>
           
-          <Text style={styles.title}>Total Bags Available to Buy: {product.TotalBagsAvailable} </Text>
-          <Text style={styles.title}>Bag Size: {product.BagSize} </Text>
+              <Text style={styles.textDisplay}>Bag Size: {product.BagSize} </Text>
+          
+           </View>
           
          
             </View>   
@@ -146,6 +148,22 @@ const styles = StyleSheet.create({
         elevation: 1,
         marginVertical: 20,
       },
+      cardTextBlock: {
+        backgroundColor: 'white',
+        borderRadius: 16,
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        marginLeft: 40,
+      
+        shadowColor: 'black',
+        shadowOffset: {
+          height: 12,
+          width: 14,
+        },
+        elevation: 1,
+        marginVertical: 20,
+      },
+      
       Image: {
         shadowColor: "black",
         shadowOffset: {
@@ -174,7 +192,7 @@ const styles = StyleSheet.create({
         paddingTop:10,
         paddingBottom:10,
 
-        backgroundColor:'darkcyan',
+        backgroundColor:'darkblue',
         borderRadius:10,
         borderWidth: 1,
         height:50 ,
@@ -256,6 +274,23 @@ const styles = StyleSheet.create({
         paddingRight : 10
     },
 
+    cardOnText:{
+      color:'white',
+      textAlign:'center',
+      fontWeight:"bold",
+      fontSize:40,
+      paddingLeft : 10 ,
+      paddingRight : 10
+  },
+
+    textDisplay:{
+      color:'black',
+      textAlign:'center',
+      fontWeight:"bold",
+      paddingLeft : 10 ,
+      paddingRight : 10 ,
+      fontSize:18
+  },
       rightcontainer: {
         flex: 1,
         
@@ -270,9 +305,9 @@ const styles = StyleSheet.create({
       },
       title: {
         fontSize: 16,
-        left: 5 ,
-        fontWeight: "500" ,
-          backgroundColor:"lightblue"
+        marginLeft: 0 ,
+        fontWeight: "bold" ,
+        backgroundColor:"lightblue"
         
 
       },

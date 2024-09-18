@@ -14,6 +14,7 @@ import Vegetables from './Vegetables';
 import VegetableListings from './Listings';
 import  ProductDetails  from './ProductDetails';
 import ProductListings from './Listings';
+import VoiceAssistance from './VoiceAssistance';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -49,6 +50,9 @@ SplashScreen.preventAutoHideAsync();
           options={({ navigation }) => ({
             title: 'Product details'
           })} />        
+
+<Stack.Screen name="VoiceAssistance" component={VoiceAssistance} />
+  
         <Stack.Screen name="+not-found" component={NotFoundScreen} />
 
       </Stack.Navigator>
