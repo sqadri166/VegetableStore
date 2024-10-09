@@ -70,7 +70,17 @@ export default function TabLayout() {
           ),
         }}
       />
-      
+
+<Tabs.Screen
+        name="VoiceChatter"
+        options={{
+          title: 'VoiceChatter',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'book' : 'book'} color={color} />
+          ),
+        }}
+      />
+
     </Tabs>
 
     

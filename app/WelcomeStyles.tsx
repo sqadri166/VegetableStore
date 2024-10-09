@@ -14,6 +14,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'navyblue'
   },
+
+
   subtitle: {
     fontSize: 12,
     color: '#666',
@@ -25,6 +27,46 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
   },
+  buttonSend: {
+   color: "darkcyan" ,
+   marginLeft: 20,
+   marginTop: 20,
+   height: 80,
+   width:50
+
+  },
+  buttonRecordingOff: {
+    color: "darkred" ,
+    marginLeft: 20,
+    marginTop: 20,
+    height: 80,
+    width:50
+   },
+
+   buttonRecordingOn: {
+    color: "darkgreen" ,
+    marginLeft: 20,
+    marginTop: 20,
+    height: 80,
+    width:50
+ 
+
+
+   },
+  buttonMicStyle: {
+    color: "darkcyan" ,
+    marginLeft: 20,
+    marginTop: 20,
+    height: 20,
+    width:80
+
+  },
+
+
+
+
+
+
   buttonText: {
     color: '#FFF',
     fontSize: 18,

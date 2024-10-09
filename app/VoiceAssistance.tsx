@@ -4,11 +4,13 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles } from './WelcomeStyles';
-const VoiceAssistance = () => {
+import * as Speech from 'expo-speech';
 
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const handleNext = () => {
-    navigation.navigate('Listings');
+const VoiceAssistance = ({navigation}) => {
+  const  handleNext = () => {
+    
+    Speech.stop();
+    navigation.navigate('VoiceChatter');
   };
 
   return (
@@ -17,13 +19,14 @@ const VoiceAssistance = () => {
         <View>
           <Text style={styles.title}>Product Order Delivery Voice Assistance</Text>
           <Text style={styles.subtitle}>Non AI Based Powered By Blue Machines</Text>
+          <Text>Please use a quite area or no background noise</Text>
         </View>
         <MaterialCommunityIcons name="account-tie-voice" size={200}
           style={{ marginBottom: 10, marginLeft: 20, color: 'darkblue' }}
         />
 
         <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Start Chat</Text>
+          <Text style={styles.buttonText}>Start Voice Chat</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
