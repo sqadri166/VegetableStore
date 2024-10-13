@@ -51,7 +51,26 @@ const VoiceChatter = ({navigation}) => {
   }, []);
 
   const onSpeechResults = (result:any) => {
+    let words = [''];
+
     setResults(result.value);
+    words = result.value
+    .replace(/[.,?!;()"'-]/g, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .split(" ");
+   // split word and look for product name serach 
+
+ words.forEach(function (word) {
+        
+  //if (!VerifyWordinProductDictionary(word))) {
+          //  index[word] = 0;
+       // }
+       // index[word]++;
+    });
+
+    // when you get results 
+    // Send split this sentence 
     // Match results with the Firestore DB 
      
   
