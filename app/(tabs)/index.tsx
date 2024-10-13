@@ -34,7 +34,7 @@ const SubzeeBackground = () => (
 export default function Home() {
   const navigation = useNavigation();
  const GoToProfile = () => { navigation.navigate('Listings') }
- const PleaseSpeak =() => {Speech.speak('You are entering into voice chat ordering system , please use proper simple sentences for example  I want to order 5 bags of Tomatoes or I would like to order , order delivery for 5 bags of Tomatoes , or whats the price' )
+ const PleaseSpeak =() => {Speech.speak('You are entering into voice chat ordering system , please use proper simple sentences for example  I want to order 5 bags of Tomatoes or I would like to order , order delivery for 5 bags of Tomatoes , or whats the price , whats the size of bag of potatoes , whats the weight of it in pounds' )
   
   navigation.navigate('VoiceAssistance')
 

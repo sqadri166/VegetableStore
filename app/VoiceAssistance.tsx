@@ -20,6 +20,8 @@ const VoiceAssistance = ({navigation}) => {
           <Text style={styles.title}>Product Order Delivery Voice Assistance</Text>
           <Text style={styles.subtitle}>Non AI Based Powered By Blue Machines</Text>
           <Text>Please use a quite area or no background noise</Text>
+          <Text>When you click on microphone wait 4 secs to start speaking</Text>
+          
         </View>
         <MaterialCommunityIcons name="account-tie-voice" size={200}
           style={{ marginBottom: 10, marginLeft: 20, color: 'darkblue' }}

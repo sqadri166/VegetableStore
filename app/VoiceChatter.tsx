@@ -34,6 +34,8 @@ const VoiceChatter = ({navigation}) => {
   
   let [recording, setRecording] = useState(false);
   let [recivedtone,setReceivedTone] =useState(false);
+  const [timeoutId, setTimeoutId] = useState(null);
+
 
 
   let [results, setResults] = useState([]);
@@ -63,6 +65,11 @@ const VoiceChatter = ({navigation}) => {
     
     await voice.start("en");
     setRecording(true);
+    const id = setTimeout(() => {
+      // Handle timeout here (play sound, display message, etc.)
+      console.log('Timeout reached!');
+    }, 10000); // 10 seconds timeout
+    setTimeoutId(id);
     setResults([]);
     
 
