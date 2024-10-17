@@ -81,6 +81,15 @@ export default function TabLayout() {
         }}
       />
 
+<Tabs.Screen
+        name="VoiceChatBubble"
+        options={{
+          title: 'VoiceChatBubble',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'book' : 'book'} color={color} />
+          ),
+        }}
+      />
     </Tabs>
 
     

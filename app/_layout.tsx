@@ -16,6 +16,7 @@ import  ProductDetails  from './ProductDetails';
 import ProductListings from './Listings';
 import VoiceAssistance from './VoiceAssistance';
 import VoiceChatter from './VoiceChatter';
+import VoiceChatBubble from './VoiceChatBubble';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -54,6 +55,9 @@ SplashScreen.preventAutoHideAsync();
 
 <Stack.Screen name="VoiceAssistance" component={VoiceAssistance} />
 <Stack.Screen name="VoiceChatter" component={VoiceChatter} />
+<Stack.Screen name="VoiceChatBubble" component={VoiceChatBubble} />
+
+
 
   
         <Stack.Screen name="+not-found" component={NotFoundScreen} />

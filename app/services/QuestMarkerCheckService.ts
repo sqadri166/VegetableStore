@@ -33,13 +33,13 @@ fetchLanguageChain:any =   async (currentPrompt:any) => {
   
   try {
     // Simulate an asynchronous operation
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
 
     
-    var data:any = [{}];
-    var newData:any= [{}];
-    var questionsHint= [{}];
+    var data:any = [];
+    var newData:any= [];
+    var questionsHint= [];
 
 
     await getDocs(collection(db, "LangaugeChain"))
@@ -49,12 +49,13 @@ fetchLanguageChain:any =   async (currentPrompt:any) => {
                // now look for possible tokens in the prompt and match for Questions filter and return                
                // look up for PRoduct Name in the Firestore 
                // 
+               console.log(currentPrompt);
                data  = newData.filter((p: { ProductName: string }) => p.ProductName.toLowerCase().includes(currentPrompt.toLowerCase()) == true );
                // Product Name matched Proceed further  
                if(data.length > 0)
               {
 
-                 // 
+                 return data;
 
               }
               else 
