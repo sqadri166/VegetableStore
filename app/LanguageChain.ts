@@ -1,5 +1,6 @@
 export interface LangaugeChain 
 {
+     [x: string]: any;
   
     
      Answer1: String , 

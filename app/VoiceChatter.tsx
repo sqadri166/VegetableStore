@@ -15,11 +15,14 @@ import { collection, getDocs } from "firebase/firestore";
 import {stylesBubble} from './ChatBubbleStyle'
 
 
+import { NativeModules } from 'react-native';
+
+
 
 import {
     Bubble,
     GiftedChat,
-    IMessageUser,
+    IMessage,
     Send,
   } from 'react-native-gifted-chat'
 import Tts from 'react-native-tts';
@@ -48,10 +51,11 @@ const VoiceChatter = ({navigation}) => {
   let [recording, setRecording] = useState(false);
   let [recorded, setRecorded] = useState(false);
   let [answering,setAnswering] = useState(false);
+  const[questionMatched, setMatchStatus] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  let [questionresponse, setQuestions] = useState(['']);
-  const [messages, setMessages] = useState(initialMessages);
+  let [questionresponse, setQuestions] = useState('');
+  let [messages, setMessages] = useState(initialMessages);
 
   
   let [recivedtone,setReceivedTone] =useState(false);
@@ -63,6 +67,91 @@ const VoiceChatter = ({navigation}) => {
 
   let [result, setResult] = useState('');
   let [botResults,setBotResults] =useState([]);
+
+
+  const fetchLanguageChain:any =   async (currentPrompt:any) => {
+  
+  
+    const deviceLanguage =
+            Platform.OS === 'ios'
+              ? NativeModules.SettingsManager.settings.AppleLocale ||
+                NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
+              : NativeModules.I18nManager.localeIdentifier;
+  
+  
+    
+    try {
+      // Simulate an asynchronous operation
+  
+  
+      
+      let data:any = [];
+      let newData:any= [];
+      let questionsHint= [];
+  
+  
+      await getDocs(collection(db, "/LangaugeChain"))
+      .then(async (querySnapshot)=>{   
+        const newData:any = querySnapshot.docs
+        .map((doc) => ({...doc.data(), id:doc.id }));            
+                 // now look for possible tokens in the prompt and match for Questions filter and return                
+                 // look up for PRoduct Name in the Firestore 
+                 // 
+                 console.log(currentPrompt);
+                 const words = currentPrompt.split(" ");
+                 for(var w = 0 ; w < words.length ; w++)
+                 {
+                     console.log('Word found ' + words[w]);
+                     console.log('Data Fecthed from Server' + newData.Question);
+                     
+                     data  = newData.filter(p => p.ProductName.toLowerCase().indexOf(words[w].toLowerCase()) !=  -1 );
+                     console.log(data.length);
+                     if(data.length > 0)
+                     {
+                        break;
+                     }
+                 }
+                 // Product Name matched Proceed further  
+                if(data.length > 0)
+                {
+  
+                   setQuestions(data);
+                   setMatchStatus(true);
+  
+                }
+                else 
+                {
+                  // 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
+                  await getDocs(collection(db, "/QuestionHints"))
+                  .then((querySnapshot)=>{               
+                      const newData:any = querySnapshot.docs
+                          .map((doc) => ({...doc.data(), id:doc.id }));
+                             // now look for possible tokens in the prompt and match for Questions filter and return                
+                             // look up for PRoduct Name in the Firestore 
+                          data = newData; 
+                          setQuestions(newData);         
+                          setMatchStatus(false);
+   
+            
+                      });
+                  
+             
+                }
+  
+                 
+  
+          });
+          const answer = data[0].Question;
+          return Promise.resolve({ success: true, data: answer });
+      
+    } catch (error:any) {
+      return Promise.resolve({ success: false, msg: error.message });
+      
+    }
+  }
+  
+
+
 
   const onSend = useCallback((messages: IMessage[] = []) => {
     const text:any  = messages[0] ;
@@ -81,7 +170,6 @@ const VoiceChatter = ({navigation}) => {
     Speech.speak(message);
   }
 
-  var service:QuestionsMarkerCheckService = new QuestionsMarkerCheckService();
 
   const stopRecording = async () => {
 
@@ -110,6 +198,7 @@ const VoiceChatter = ({navigation}) => {
       })
 
       if (result) {
+        console.log("resultfound");
         processTranscription(result);
       }
 
@@ -120,6 +209,9 @@ const VoiceChatter = ({navigation}) => {
 
   }
 
+
+
+
   const startRecording = async () => {
 
     console.log("== startRecording ");
@@ -127,11 +219,13 @@ const VoiceChatter = ({navigation}) => {
     Tts.stop();
 
     try {
-      await Voice.start('en-US');
+      await Voice.start('en-US',{REQUEST_PERMISSIONS_AUTO: true});
     } catch (e) {
       console.error(e);
     }
   };
+
+
 
 
   const processTranscription = async (prompt: string) => {
@@ -140,13 +234,14 @@ const VoiceChatter = ({navigation}) => {
     if (prompt.trim().length > 0) {
 
       setAnswering(true);
-      service.fetchLanguageChain(prompt.trim()).then((res: any) => {
-        console.log( res[0]);
-        if (res.success) {
-          setAnswering(false);
 
-          const newMsg = {
-            _id: Math.round(Math.random() * 1000000),
+      await fetchLanguageChain(prompt.trim()).then((res: any) => {
+       var newMsg:any
+      
+         
+          setAnswering(false);
+          newMsg = {
+            _id: Math.round(Math.random() * 1000),
             text: res.data,
             createdAt: new Date(),
             user: {
@@ -154,27 +249,30 @@ const VoiceChatter = ({navigation}) => {
               name: 'Assistant',
             }
           };
-
-          const newMessage:any = [newMsg]
+           
+         const newMessage:any = [newMsg]
           setMessages((previousMessages) => {
             return GiftedChat.append(previousMessages, newMessage, Platform.OS !== 'web');
           })
-
+           
           if (voice) {
-            readTheAnswer(res.data);
+            readTheAnswer(newMsg.text);
           }
 
-        } else {
+        else {
           setAnswering(false);
-          setErrorMsg(res.msg);
+          setErrorMsg('No Answer Replied from Voice Assitance Systems');
 
         }
+      
 
-      })
-    }
-
+      
+    });
 
   }
+
+}
+  
 
 
   const renderSend = (props: any) => {
@@ -266,11 +364,11 @@ const VoiceChatter = ({navigation}) => {
   // send this data to text model No AI and retreive answers 
 
   return (
-    <SafeAreaView style={styles.containerChat}>
+    <SafeAreaView style={styles.Giftcontainer}>
     
 
 
-      <GiftedChat messagesContainerStyle={styles.containerChatBox}
+      <GiftedChat messagesContainerStyle={styles.Giftcontainer}
         messages={messages}
         showAvatarForEveryMessage={true}
         onSend={messages => onSend(messages)}

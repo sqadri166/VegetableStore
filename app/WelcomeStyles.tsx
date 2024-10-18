@@ -16,9 +16,9 @@ const styles = StyleSheet.create({
   },
 
   containerChatBox: {
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
-    padding: 80,
+    padding: 50,
     marginTop: 10,
   },
   
@@ -79,7 +79,11 @@ const styles = StyleSheet.create({
 
   },
 
-
+  Giftcontainer: {
+    marginTop:100,
+     flex: 1,
+    paddingHorizontal:10
+   },
 
   rightArrow: {
     position: "absolute",

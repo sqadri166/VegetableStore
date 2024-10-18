@@ -23,6 +23,7 @@ export class QuestionsMarkerCheckService
 // Fetch filter if PRoduct NAe found 
 fetchLanguageChain:any =   async (currentPrompt:any) => {
   
+  
   const deviceLanguage =
           Platform.OS === 'ios'
             ? NativeModules.SettingsManager.settings.AppleLocale ||
@@ -33,7 +34,7 @@ fetchLanguageChain:any =   async (currentPrompt:any) => {
   
   try {
     // Simulate an asynchronous operation
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100000));
 
 
     
@@ -49,7 +50,7 @@ fetchLanguageChain:any =   async (currentPrompt:any) => {
                // now look for possible tokens in the prompt and match for Questions filter and return                
                // look up for PRoduct Name in the Firestore 
                // 
-               console.log(currentPrompt);
+               console.log(currentPrompt + 'fdfffgg' );
                data  = newData.filter((p: { ProductName: string }) => p.ProductName.toLowerCase().includes(currentPrompt.toLowerCase()) == true );
                // Product Name matched Proceed further  
                if(data.length > 0)
@@ -63,23 +64,7 @@ fetchLanguageChain:any =   async (currentPrompt:any) => {
                 // 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
                  questionsHint =  this.fetchQuestionBankData();
                  return questionsHint;
-              //   https://www.google.com/search?client=safari&rls=en&q=React+Native+LAnguage+Culture++translate+text&ie=UTF-8&oe=UTF-8
-                 // Load Question Hint
-                // Now Fetch Questions Hint what ever defined and ask the vendor 
-                // We didnt find Product Match ask for 
-                // Insert Questions List 
-                // Check langauge Culture of Phone 
-
-                // if(deviceLanguage === "es-ES" || deviceLanguage === "es" )
-                // {
-                  //  data.append({Question1:"We didnt find the Product you are looking for , Can you you please type or ask again for a valid Product Name" ,  Question2 : "Please provide information about what Product you want to buy for example say things like I want to buy 5 bags of Potatoes or 2 boxes of Tomatoes" })
            
-                // }
-                // else if(deviceLanguage === "en" || deviceLanguage === "en" )
-               //  {
-                 //   data.append({Question1:"We didnt find the Product you are looking for , Can you you please type or ask again for a valid Product Name" ,  Question2 : "Please provide information about what Product you want to buy for example say things like I want to buy 5 bags of Potatoes or 2 boxes of Tomatoes" })
-               //  }
-
               }
 
                
