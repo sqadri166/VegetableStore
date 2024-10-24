@@ -46,7 +46,7 @@ const VoiceChatter = ({navigation}) => {
   ];
 
 
-
+  let productInformation:any = [{}];
   
   let [recording, setRecording] = useState(false);
   let [recorded, setRecorded] = useState(false);
@@ -62,90 +62,116 @@ const VoiceChatter = ({navigation}) => {
   const [timeoutId, setTimeoutId] = useState(null);
   const [speaking, setSpeaking] = useState(false);
   const [ttsStatus, setTtsStatus] = useState('');
+  let [products,setProducts] = useState(productInformation);
 
+  let [questionhints, setQuestionHints] = useState([]);
+  let [questionBank, setQuestionBank] = useState([]);
 
 
   let [result, setResult] = useState('');
   let [botResults,setBotResults] =useState([]);
 
 
+
+  const fetchProducts = async () => {
+
+    await getDocs(collection(db, "Products"))
+        .then((querySnapshot)=>{               
+            const newData:any = querySnapshot.docs
+                .map((doc) => ({...doc.data(), id:doc.id }));
+              
+             setProducts(newData);                
+        })
+
+
+}
+
+
+const fetchQuestionHints = async () => {
+
+  await getDocs(collection(db, "QuestionHints"))
+      .then((querySnapshot)=>{               
+          const newData:any = querySnapshot.docs
+              .map((doc) => ({...doc.data(), id:doc.id }));
+           setQuestionHints(newData);                
+      })
+
+      
+}
+
+
+const fetchQuestionBank = async () => {
+
+  await getDocs(collection(db, "Questions"))
+      .then((querySnapshot)=>{               
+          const newData:any = querySnapshot.docs
+              .map((doc) => ({...doc.data(), id:doc.id }));
+           setQuestionBank(newData);                
+      })
+
+      
+}
+
   const fetchLanguageChain:any =   async (currentPrompt:any) => {
   
-  
-    const deviceLanguage =
-            Platform.OS === 'ios'
-              ? NativeModules.SettingsManager.settings.AppleLocale ||
-                NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
-              : NativeModules.I18nManager.localeIdentifier;
-  
-  
-    
-    try {
-      // Simulate an asynchronous operation
-  
-  
-      
-      let data:any = [];
-      let newData:any= [];
-      let questionsHint= [];
-  
-  
-      await getDocs(collection(db, "/LangaugeChain"))
-      .then(async (querySnapshot)=>{   
-        const newData:any = querySnapshot.docs
-        .map((doc) => ({...doc.data(), id:doc.id }));            
-                 // now look for possible tokens in the prompt and match for Questions filter and return                
-                 // look up for PRoduct Name in the Firestore 
-                 // 
-                 console.log(currentPrompt);
-                 const words = currentPrompt.split(" ");
-                 for(var w = 0 ; w < words.length ; w++)
-                 {
-                     console.log('Word found ' + words[w]);
-                     console.log('Data Fecthed from Server' + newData.Question);
-                     
-                     data  = newData.filter(p => p.ProductName.toLowerCase().indexOf(words[w].toLowerCase()) !=  -1 );
-                     console.log(data.length);
-                     if(data.length > 0)
-                     {
+    const answer:any =[] ;
+    var data:any = [{}];
+
+          try {
+             if(products.length > 0 )
+              {
+          
+                  const words = currentPrompt.split(' ');
+                  for(var i =0 ; i < words.length ; i++)
+                  {
+                    data = products.filter(function(el:any) {
+                    return words[i].toLowerCase() === el.ProductName.toLowerCase()
+                    });
+                    if(data !== null)
+                    {
                         break;
-                     }
-                 }
-                 // Product Name matched Proceed further  
-                if(data.length > 0)
-                {
-  
-                   setQuestions(data);
-                   setMatchStatus(true);
-  
-                }
-                else 
-                {
-                  // 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
-                  await getDocs(collection(db, "/QuestionHints"))
-                  .then((querySnapshot)=>{               
-                      const newData:any = querySnapshot.docs
-                          .map((doc) => ({...doc.data(), id:doc.id }));
-                             // now look for possible tokens in the prompt and match for Questions filter and return                
-                             // look up for PRoduct Name in the Firestore 
-                          data = newData; 
-                          setQuestions(newData);         
-                          setMatchStatus(false);
-   
-            
-                      });
+                    } 
+
+                   
+                  }
+                  // you find a product match means time to feed Question Hint First
+                  if(data.length > 0 ) 
+                  {
+                    console.log("Data Found for product " + data[0].ProductName);
                   
-             
+                   
+                    for(var i=0 ; i < questionBank.length ; i++)
+                    {
+                       answer.push({Question:questionBank[i].Question.replace("{ProductName}",data[0].ProductName).replace("{Quantity}", "1").replace("{weightRefs}","pounds or boxes") }); 
+                    }
+
+                    answer.push({Question: "We found a product match for your product " + data[0].ProductName }) ;
+                    answer.push({Question: "You must ask proper questions like whats the price of " + data[0].ProductName + ", I want to order product , you must name your product name like I want to order 5 bags of Tomatoes or other Product "  }); 
+                    answer.push({Question:"You can ask Question like below" });
+                         
+                    
+                  }
+                  else 
+                  {
+                    answer.push({Question: "We didnt found a product match for your question [ " + currentPrompt + "]"  }); 
+                    
+                    
+                    answer.push({Question: "You must ask proper questions like whats the price of product , I want to order product , you must name your product name like I want to order 5 bags of Potatoes "  }); 
+                    
+
+                  
+
+
+                  }
+
+                  
                 }
-  
-                 
-  
-          });
-          const answer = data[0].Question;
-          return Promise.resolve({ success: true, data: answer });
+               const composed =   answer;
+               console.log("Message response composed as== " + answer);
+              return Promise.resolve({ success: true, data: composed });
       
     } catch (error:any) {
-      return Promise.resolve({ success: false, msg: error.message });
+      return Promise.resolve({ success: false, msg: error });
       
     }
   }
@@ -230,40 +256,65 @@ const VoiceChatter = ({navigation}) => {
 
   const processTranscription = async (prompt: string) => {
 
-    
+     var newMsg:any ;
+     var newMessage:any = [{
+      _id: Math.round(Math.random() * 1000),
+      text: "replying wait ..."  ,
+      createdAt: new Date(),
+      user: {
+        _id: 1,
+        name: 'Assistant',
+      }
+    }];
+     var questionData:any ;
+     
     if (prompt.trim().length > 0) {
 
+      
       setAnswering(true);
 
       await fetchLanguageChain(prompt.trim()).then((res: any) => {
-       var newMsg:any
-      
-         
+        console.log(res.msg);
+        var repliedBotAnswers = [];
+        if (res.success) {
+           repliedBotAnswers = res.data;
+
           setAnswering(false);
-          newMsg = {
-            _id: Math.round(Math.random() * 1000),
-            text: res.data,
-            createdAt: new Date(),
-            user: {
-              _id: 1,
-              name: 'Assistant',
-            }
-          };
+          console.log("Response time " + res.data);
+          
+          for(var m= 0 ; m < repliedBotAnswers.length ; m++ )
+          {
+            
+              newMsg = {
+                _id: Math.round(Math.random() * 1000),
+                text: repliedBotAnswers[m].Question.toString() ,
+                createdAt: new Date(),
+                user: {
+                  _id: 1,
+                  name: 'Assistant',
+                }
+              };
+              newMessage.push(newMsg);
+          }
            
-         const newMessage:any = [newMsg]
-          setMessages((previousMessages) => {
+
+        setMessages((previousMessages) => {
             return GiftedChat.append(previousMessages, newMessage, Platform.OS !== 'web');
           })
-           
+         
           if (voice) {
             readTheAnswer(newMsg.text);
           }
-
+          
+        
+        }
         else {
           setAnswering(false);
+
           setErrorMsg('No Answer Replied from Voice Assitance Systems');
 
         }
+      
       
 
       
@@ -315,7 +366,9 @@ const VoiceChatter = ({navigation}) => {
 
 
   useEffect(() => {
-
+  fetchProducts();
+  fetchQuestionHints();
+  fetchQuestionBank();
 
     Voice.onSpeechStart = (e) => {
       setErrorMsg('');
@@ -347,6 +400,7 @@ const VoiceChatter = ({navigation}) => {
       setResult(prompt);
     };
 
+    
 
     setMessages(initialMessages);
 
