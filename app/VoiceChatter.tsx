@@ -28,6 +28,7 @@ import {
 import Tts from 'react-native-tts';
 import * as Speech from 'expo-speech';
 import voice from "@react-native-voice/voice";
+import { Ranking } from './Ranking';
 
 // You need to /replace it with Firebase Data 
 
@@ -112,6 +113,47 @@ const fetchQuestionBank = async () => {
       
 }
 
+
+ const rankingAndIndexAnalysisOfQuestions = async (question: any) => {
+    // Rank the Works
+               const words = question.split(' ');
+
+          
+          
+                 var currentIndexing:any = [{}]
+                 var index = 0;
+                 var currentpropmtIndexWord:any;
+                 var currentQuestion:any;
+
+
+                  for(var i =0 ; i < words.length ; i++)
+                  {
+                      const current:Ranking = {Rank: index++ , Word: words[i]  };
+                      currentIndexing.push(current);
+
+                  }
+                  // Compare this index with repository 
+                  // index by index 
+
+                  for(var m=0 ; m < questionBank.length; m++)
+                  {
+                          if(currentIndexing.length > m )
+                          {
+                              // fetch word 
+                               currentpropmtIndexWord = currentIndexing[m] ;
+                              
+                          }
+                          // look for that word and index match if match its true , all true means parsed successfully 
+                          currentQuestion = questionBank[m];
+                         // each word is in order with exception of 1 
+                         // ask for confirmation of question 
+                         // reply Yes and Generate  
+
+
+                  }
+
+ }
+
   const fetchLanguageChain:any =   async (currentPrompt:any) => {
   
     const answer:any =[] ;
@@ -124,11 +166,13 @@ const fetchQuestionBank = async () => {
                   const words = currentPrompt.split(' ');
                   for(var i =0 ; i < words.length ; i++)
                   {
-                    data = products.filter(function(el:any) {
-                    return words[i].toLowerCase() === el.ProductName.toLowerCase()
-                    });
-                    if(data !== null)
+                     data = products.filter(function(el:any) {
+                      return words[i].toLowerCase() === el.ProductName.toLowerCase()
+                     });
+                    
+                    if(data.length > 0 ) 
                     {
+                        console.log("Product Match Found here for " + data[0].ProductName);
                         break;
                     } 
 
@@ -142,21 +186,23 @@ const fetchQuestionBank = async () => {
                    
                     for(var i=0 ; i < questionBank.length ; i++)
                     {
-                       answer.push({Question:questionBank[i].Question.replace("{ProductName}",data[0].ProductName).replace("{Quantity}", "1").replace("{weightRefs}","pounds or boxes") }); 
+                      // this from Data base real time 
+                       answer.push({Question:questionBank[i].Question.replace("{ProductName}",data[0].ProductName).replace("{Quantity}", "1").replace("{weightRefs}","pounds or boxes") , HumanQuestion:questionBank[i].HumanQuestion }); 
                     }
 
-                    answer.push({Question: "We found a product match for your product " + data[0].ProductName }) ;
-                    answer.push({Question: "You must ask proper questions like whats the price of " + data[0].ProductName + ", I want to order product , you must name your product name like I want to order 5 bags of Tomatoes or other Product "  }); 
-                    answer.push({Question:"You can ask Question like below" });
+                    answer.push({Question:"You can ask Proper Questions like below otherwise the Bot will not help" , HumanQuestion: "For example I would like to know the price of this Product"  });
+                    answer.push({Question: "You must ask proper questions like whats the price of " + data[0].ProductName + ", I want to order product , you must name your product name like I want to order 5 bags of Tomatoes or other Product " , HumanQuestion:"Whats the weight of 1 bag of Tomatoes" }); 
+                 
+                    answer.push({Question: "We found a product match for your product " + data[0].ProductName , HumanQuestion: "Tell me more about this Product"}) ;
                          
                     
                   }
                   else 
                   {
-                    answer.push({Question: "We didnt found a product match for your question [ " + currentPrompt + "]"  }); 
+                    answer.push({Question: "We didnt found a product match for your question [ " + currentPrompt + "]"  , HumanQuestion: "You can ask for example Do you have Tomatoes or Potatoes or bag of Onions"  }); 
                     
                     
-                    answer.push({Question: "You must ask proper questions like whats the price of product , I want to order product , you must name your product name like I want to order 5 bags of Potatoes "  }); 
+                    answer.push({Question: "You must ask proper questions like whats the price of product , I want to order product , you must name your product name like I want to order 5 bags of Potatoes " , HumanQuestion: "give me more information about this Product" }); 
                     
 
                   
@@ -207,6 +253,8 @@ const fetchQuestionBank = async () => {
 
       console.log("== stopRecording: ", result);
 
+      // delay needed here to remove listener 
+
       const newMsg = {
         _id: Math.round(Math.random() * 1000000),
         text: result,
@@ -216,6 +264,8 @@ const fetchQuestionBank = async () => {
           name: 'User',
         }
       };
+      
+
 
       const newMessage:any = [newMsg]
 
@@ -243,7 +293,7 @@ const fetchQuestionBank = async () => {
     console.log("== startRecording ");
     setRecording(true);
     Tts.stop();
-
+    setResult(''); 
     try {
       await Voice.start('en-US',{REQUEST_PERMISSIONS_AUTO: true});
     } catch (e) {
@@ -251,7 +301,17 @@ const fetchQuestionBank = async () => {
     }
   };
 
+// Take the sentence and sort by Rank then match each token with similar Rank 
+// Return true id Rank for expample {prcie} , {weightRefs} , rank matched index then replace like numbers to Quantity 
+// And then analyze to confirm would you like to Order 5 bags of Tomatoes 
+// Replies yes 
+// Creating Order Generate Invoice 
 
+const sortAndIndexSentence = async () => {
+
+
+
+} ;
 
 
   const processTranscription = async (prompt: string) => {
@@ -372,6 +432,7 @@ const fetchQuestionBank = async () => {
 
     Voice.onSpeechStart = (e) => {
       setErrorMsg('');
+
       setRecording(true);
     };
 
