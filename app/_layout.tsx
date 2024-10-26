@@ -53,7 +53,9 @@ SplashScreen.preventAutoHideAsync();
             title: 'Product details'
           })} />        
 
-<Stack.Screen name="VoiceAssistance" component={VoiceAssistance} />
+<Stack.Screen name="VoiceAssistance" component={VoiceAssistance}    options={({ navigation }) => ({
+            title: 'Order Voice Assistance'
+          })} />      
 <Stack.Screen name="VoiceChatter" component={VoiceChatter} />
 <Stack.Screen name="VoiceChatBubble" component={VoiceChatBubble} />
 

@@ -7,9 +7,10 @@ import { styles } from './WelcomeStyles';
 import * as Speech from 'expo-speech';
 
 const VoiceAssistance = ({navigation}) => {
+ 
   const  handleNext = () => {
+
     
-    Speech.stop();
     navigation.navigate('VoiceChatter');
   };
 

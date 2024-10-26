@@ -29,12 +29,13 @@ import Tts from 'react-native-tts';
 import * as Speech from 'expo-speech';
 import voice from "@react-native-voice/voice";
 import { Ranking } from './Ranking';
+import { useNavigation } from 'expo-router';
 
 // You need to /replace it with Firebase Data 
 
 // imeplement Login Feature with Firestore Authentication and insert that user Id in route navigation 
-const VoiceChatter = ({navigation}) => {
-
+const VoiceChatter = ({}) => {
+  
   const initialMessages: IMessage[] =
   [
     {
@@ -227,10 +228,13 @@ const fetchQuestionBank = async () => {
 
   const onSend = useCallback((messages: IMessage[] = []) => {
     const text:any  = messages[0] ;
+    setResult(text);
+
     setMessages((previousMessages) => {
       return GiftedChat.append(previousMessages, messages, Platform.OS !== 'web');
     })
     processTranscription(text);
+
   }, []);
 
   const stopSpeaking = () => {
@@ -293,7 +297,7 @@ const fetchQuestionBank = async () => {
     console.log("== startRecording ");
     setRecording(true);
     Tts.stop();
-    setResult(''); 
+    
     try {
       await Voice.start('en-US',{REQUEST_PERMISSIONS_AUTO: true});
     } catch (e) {
@@ -363,7 +367,8 @@ const sortAndIndexSentence = async () => {
           })
          
           if (voice) {
-            readTheAnswer(newMsg.text);
+            for(var i= newMessage.length-1; i >= 0  ; i--)
+            readTheAnswer(newMessage[i].text);
           }
           
         
@@ -392,7 +397,6 @@ const sortAndIndexSentence = async () => {
 
       <View>
       
-       <View>
         <Send  containerStyle={{
         backgroundColor: "white",
         borderTopColor: "#E8E8E8",
@@ -404,7 +408,7 @@ const sortAndIndexSentence = async () => {
             style={styles.buttonSend} size={30}
           />
         </Send>
-        </View>
+        
         <View style={styles.buttonMicStyle}>
         <TouchableOpacity
           onPress={recording ? stopRecording : startRecording}>
@@ -419,7 +423,7 @@ const sortAndIndexSentence = async () => {
   };
 
   const scrollToBottomComponent = () => {
-    return <MaterialCommunityIcons name="arrow-down-circle-outline" size={28} color="#10a37f" />;
+    return <MaterialCommunityIcons name="arrow-down-circle-outline" size={60} color="#10a37f" />;
   };
 
 
@@ -479,7 +483,7 @@ const sortAndIndexSentence = async () => {
   // send this data to text model No AI and retreive answers 
 
   return (
-    <SafeAreaView style={styles.Giftcontainer}>
+    <View style={styles.Giftcontainer}>
     
 
 
@@ -501,7 +505,7 @@ const sortAndIndexSentence = async () => {
 
 
     
-  </SafeAreaView>
+  </View>
   );
 };
 
