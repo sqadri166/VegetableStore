@@ -107,6 +107,21 @@ const styles = StyleSheet.create({
     right: -20
   
   },
+
+  bubblecontainer: {
+    marginTop:10,
+     flex: 1,
+    paddingHorizontal:10
+   },
+   chatBubble: {
+     padding: 10,
+   },
+   text: {
+     color: 'black',
+   },
+   textOwn: {
+    color: 'white',
+  },
   
   /*Arrow head for recevied messages*/
   leftArrow: {

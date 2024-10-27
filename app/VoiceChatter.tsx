@@ -276,6 +276,7 @@ const fetchQuestionBank = async () => {
       setMessages((previousMessages) => {
         return GiftedChat.append(previousMessages, newMessage, Platform.OS !== 'web');
       })
+        setResult('');
 
       if (result) {
         console.log("resultfound");
@@ -483,11 +484,11 @@ const sortAndIndexSentence = async () => {
   // send this data to text model No AI and retreive answers 
 
   return (
-    <View style={styles.Giftcontainer}>
+    <View style={styles.bubblecontainer}>
     
 
 
-      <GiftedChat messagesContainerStyle={styles.Giftcontainer}
+      <GiftedChat messagesContainerStyle={styles.chatBubble}
         messages={messages}
         showAvatarForEveryMessage={true}
         onSend={messages => onSend(messages)}
@@ -507,6 +508,8 @@ const sortAndIndexSentence = async () => {
     
   </View>
   );
+
+  
 };
 
 
