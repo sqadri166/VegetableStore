@@ -168,6 +168,7 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+
     implementation("com.facebook.react:react-android")
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
@@ -193,6 +194,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+  
+   
 }
 
 if (rnVersion < versionToNumber(0, 75, 0)) {

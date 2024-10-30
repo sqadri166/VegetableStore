@@ -229,7 +229,7 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
                        });
                       console.log("Product " + data[0].ProductName);
                       // fetch Price of Product NAme 
-                      answer.push({Question:"The price of " + data[0].ProductName + " Per Bag is " + data[0].PricePerBag  , HumanQuestion: "For example I would like to know the price of this Product"  });
+                      answer.push({Question:"The price of " + data[0].ProductName + " Per Bag is " + data[0].PricePerBag + " would you like to order now" , HumanQuestion: "For example I would like to know the price of this Product"  });
                    //   const composedm =   answer;
                      // console.log("Message response composed as== " + answer);
                      return Promise.resolve({ success: true, data: answer });
@@ -430,9 +430,7 @@ const sortAndIndexSentence = async () => {
       setAnswering(true);
       console.log("Start Here " + prompt);
 
-setTimeout(() => {
-  console.log("Hello after 2 seconds!");
-}, 2000);
+
 
 console.log("start processing propmt " + prompt);
       
