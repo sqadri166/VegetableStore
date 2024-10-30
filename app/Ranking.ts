@@ -1,7 +1,8 @@
 export interface Ranking 
 {
     Rank:Number ,
-    Word:String 
+    Word:String ,
+    Found:Boolean
 
 
 }

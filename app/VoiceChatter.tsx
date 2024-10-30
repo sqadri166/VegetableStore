@@ -14,6 +14,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { collection, getDocs } from "firebase/firestore";
 import {stylesBubble} from './ChatBubbleStyle'
 
+import * as Localization from 'expo-localization';
 
 import { NativeModules } from 'react-native';
 
@@ -36,6 +37,13 @@ import { useNavigation } from 'expo-router';
 // imeplement Login Feature with Firestore Authentication and insert that user Id in route navigation 
 const VoiceChatter = ({}) => {
   
+
+  const getDeviceLocale = () => {
+    const locale = Localization.locale;
+    console.log(locale); 
+  };
+
+
   const initialMessages: IMessage[] =
   [
     {
@@ -64,10 +72,13 @@ const VoiceChatter = ({}) => {
   const [timeoutId, setTimeoutId] = useState(null);
   const [speaking, setSpeaking] = useState(false);
   const [ttsStatus, setTtsStatus] = useState('');
+  const [productName ,setProductName] = useState('');
   let [products,setProducts] = useState(productInformation);
-
+  
   let [questionhints, setQuestionHints] = useState([]);
   let [questionBank, setQuestionBank] = useState([]);
+  let [answerPriceRequired,setAnswerPriceReq] = useState(false);
+  let [respondedQuestion,setRepsonse] = useState([]);
 
 
   let [result, setResult] = useState('');
@@ -113,11 +124,17 @@ const fetchQuestionBank = async () => {
 
       
 }
-
+const allPropertiesTrue = (currentIndexing:any , prop:any) => {
+  return currentIndexing.every(p => p.hasOwnProperty(prop) && p[prop] === true);
+};
 
  const rankingAndIndexAnalysisOfQuestions = async (question: any) => {
     // Rank the Works
+
+   
+
                const words = question.split(' ');
+               const answer:any =[] ;
 
           
           
@@ -126,55 +143,129 @@ const fetchQuestionBank = async () => {
                  var currentpropmtIndexWord:any;
                  var currentQuestion:any;
 
-
+                  try 
+                  {
                   for(var i =0 ; i < words.length ; i++)
                   {
-                      const current:Ranking = {Rank: index++ , Word: words[i]  };
+                      const current:Ranking = {Rank: index++ , Word: words[i] , Found: false };
                       currentIndexing.push(current);
 
                   }
                   // Compare this index with repository 
                   // index by index 
-
+                  var counterI = 0 ;
                   for(var m=0 ; m < questionBank.length; m++)
                   {
-                          if(currentIndexing.length > m )
-                          {
-                              // fetch word 
-                               currentpropmtIndexWord = currentIndexing[m] ;
-                              
-                          }
-                          // look for that word and index match if match its true , all true means parsed successfully 
+                         
                           currentQuestion = questionBank[m];
+                          // you need to match a question and confirm it 
+                          const currentIndexQuestionTokens =   question.split(' ');
+                          for(var k =0 ; k < currentIndexQuestionTokens.length ; k++)
+                          {
+                            // find the k =0 
+                            console.log("Index " + currentIndexing[k].Rank +  "Word is===" + currentIndexing[k].Word  + "Comapre to " + currentIndexQuestionTokens[k-1]);
+                            if(currentIndexing[k].Word.toLowerCase().toString() ===  currentIndexQuestionTokens[k-1].toLowerCase().toString()  )      
+                            {
+                             
+                              counterI = counterI + 1;
+
+                            }
+                            
+                            
+                          }
+                        
+                          console.log( "Current Index " + counterI +    " Current Question Index " + currentIndexQuestionTokens.length);
+                          if((allPropertiesTrue(currentIndexing,'Found')) || (counterI  === currentIndexQuestionTokens.length -1))
+                          {
+                            answer.push({Question: question , HumanQuestion: "Confirming your Question again " + question + " reply Yes or No " , Matched:true });
+
+                                   // question matched respond the question 
+                                   console.log("Question Matched here");
+                                   break;
+
+ 
+                          }
+                          else 
+                          {
+                            answer.push({Question: "We didn't find a match for your Question" , HumanQuestion: "Speak Again" , Matched:false  });
+
+
+                          }
+
+                          console.log("Message response composed as== " + answer);
+                          return Promise.resolve({ success: true, data: answer });
+                        }
+                  
+                } catch (error:any) {
+                  return Promise.resolve({ success: false, msg: error });
+                  
+                }
+                          
+                          // look for that word and index match if match its true , all true means parsed successfully 
                          // each word is in order with exception of 1 
                          // ask for confirmation of question 
                          // reply Yes and Generate  
 
 
-                  }
+  }
 
- }
+ 
 
   const fetchLanguageChain:any =   async (currentPrompt:any) => {
   
     const answer:any =[] ;
     var data:any = [{}];
 
+           
           try {
-             if(products.length > 0 )
+              if(answerPriceRequired)
+              {
+                   // look for Yes
+                   if(currentPrompt == "Yes" || currentPrompt == "yes" )
+                    {
+                      console.log(currentPrompt);
+                      data = products.filter(function(el:any) {
+                        return productName.toLowerCase() === el.ProductName.toLowerCase() ;
+                       });
+                      console.log("Product " + data[0].ProductName);
+                      // fetch Price of Product NAme 
+                      answer.push({Question:"The price of " + data[0].ProductName + " Per Bag is " + data[0].PricePerBag  , HumanQuestion: "For example I would like to know the price of this Product"  });
+                   //   const composedm =   answer;
+                     // console.log("Message response composed as== " + answer);
+                     return Promise.resolve({ success: true, data: answer });
+
+                    }
+                    else if (currentPrompt == "No" || currentPrompt == "no" )
+                    {
+                      answer.push({Question:"You can ask other questions as being taught by Bot" , HumanQuestion: "For example I would like to know the price of this Product"  });
+
+
+                    } 
+
+
+              } 
+            if(products.length > 0 )
               {
           
                   const words = currentPrompt.split(' ');
                   for(var i =0 ; i < words.length ; i++)
                   {
                      data = products.filter(function(el:any) {
-                      return words[i].toLowerCase() === el.ProductName.toLowerCase()
+                      return words[i].toLowerCase() === el.ProductName.toLowerCase() ;
                      });
                     
                     if(data.length > 0 ) 
                     {
+                        setProductName(data[0].ProductName);
                         console.log("Product Match Found here for " + data[0].ProductName);
                         break;
+                    }
+                    else 
+                    {
+                      data = questionBank.filter(function(el:any) {
+                        return el.includes(words[i].toLowerCase() ) ;
+                       });
+
                     } 
 
                    
@@ -337,39 +428,92 @@ const sortAndIndexSentence = async () => {
 
       
       setAnswering(true);
+      console.log("Start Here " + prompt);
 
-      await fetchLanguageChain(prompt.trim()).then((res: any) => {
+setTimeout(() => {
+  console.log("Hello after 2 seconds!");
+}, 2000);
+
+console.log("start processing propmt " + prompt);
+      
+     // await rankingAndIndexAnalysisOfQuestions(prompt.trim()).then((res: any) => {
+
+     await fetchLanguageChain(prompt.trim()).then((res: any) => {
         console.log(res.msg);
+        
         var repliedBotAnswers = [];
         if (res.success) {
            repliedBotAnswers = res.data;
 
           setAnswering(false);
           console.log("Response time " + res.data);
-          
+              
           for(var m= 0 ; m < repliedBotAnswers.length ; m++ )
           {
+            if((repliedBotAnswers[m].Question.toString() == prompt.trim().toString()) || repliedBotAnswers[m].Question.toString().includes(prompt.trim().toString()) )
+            { 
+
+
             
               newMsg = {
                 _id: Math.round(Math.random() * 1000),
                 text: repliedBotAnswers[m].Question.toString() ,
                 createdAt: new Date(),
                 user: {
-                  _id: 1,
+                  _id: Math.round(Math.random() * 1000),
                   name: 'Assistant',
                 }
               };
               newMessage.push(newMsg);
-          }
-           
+              break;
 
-        setMessages((previousMessages) => {
-            return GiftedChat.append(previousMessages, newMessage, Platform.OS !== 'web');
-          })
+            }
+            else if((prompt === "Yes" || prompt === "yes")  && answerPriceRequired)
+            {
+                newMsg = {
+                  _id: Math.round(Math.random() * 1000),
+                  text: repliedBotAnswers[m].Question.toString() ,
+                  createdAt: new Date(),
+                  user: {
+                    _id: Math.round(Math.random() * 1000),
+                    name: 'Assistant',
+                  }
+                };
+                newMessage.push(newMsg);
+                setAnswerPriceReq(false);
+
+  
+    
+                
+              }
+
+          }
+         
+           
+          
+            setMessages((previousMessages) => {
+            
+              return GiftedChat.append(previousMessages,newMessage, Platform.OS !== 'web');
+            });
+
+
+         
+
          
           if (voice) {
             for(var i= newMessage.length-1; i >= 0  ; i--)
-            readTheAnswer(newMessage[i].text);
+             { 
+               readTheAnswer(newMessage[i].text);
+               
+                if(newMessage[i].text.includes("price"))
+                {
+                    setAnswerPriceReq(true);
+                    break;
+                }  
+             
+            }
+
+             
           }
           
         
@@ -443,6 +587,8 @@ const sortAndIndexSentence = async () => {
 
     Voice.onSpeechEnd = (e) => {
       setRecording(false);
+     
+
     };
 
 
@@ -459,6 +605,7 @@ const sortAndIndexSentence = async () => {
     }
 
     Voice.onSpeechResults = (e: any) => {
+
       const prompt = e.value[0];
       if (!prompt) {
         return;
@@ -487,8 +634,7 @@ const sortAndIndexSentence = async () => {
     <View style={styles.bubblecontainer}>
     
 
-
-      <GiftedChat messagesContainerStyle={styles.chatBubble}
+    <GiftedChat messagesContainerStyle={styles.chatBubble}
         messages={messages}
         showAvatarForEveryMessage={true}
         onSend={messages => onSend(messages)}
@@ -502,10 +648,7 @@ const sortAndIndexSentence = async () => {
         scrollToBottom
         scrollToBottomComponent={scrollToBottomComponent}
       />
-       
-
-
-    
+          
   </View>
   );
 
