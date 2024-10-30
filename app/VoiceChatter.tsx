@@ -83,6 +83,7 @@ const VoiceChatter = ({}) => {
 
   let [result, setResult] = useState('');
   let [botResults,setBotResults] =useState([]);
+  const [priceResponsded,setPriceResponded ] = useState("No")
 
 
 
@@ -229,18 +230,32 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
                        });
                       console.log("Product " + data[0].ProductName);
                       // fetch Price of Product NAme 
-                      answer.push({Question:"The price of " + data[0].ProductName + " Per Bag is " + data[0].PricePerBag + " would you like to order now" , HumanQuestion: "For example I would like to know the price of this Product"  });
+                      answer.push({Question:"The price of " + data[0].ProductName + " Per Bag is " + data[0].PricePerBag + " each bag weighing " +  data[0].WeightPerBag   +  " would you like to order now" , HumanQuestion: "For example I would like to know the price of this Product"  });
                    //   const composedm =   answer;
                      // console.log("Message response composed as== " + answer);
+                     setPriceResponded("Yes");
+                     setAnswerPriceReq(false);
                      return Promise.resolve({ success: true, data: answer });
 
                     }
-                    else if (currentPrompt == "No" || currentPrompt == "no" )
+                    else if (currentPrompt === "No" || currentPrompt === "no" )
                     {
                       answer.push({Question:"You can ask other questions as being taught by Bot" , HumanQuestion: "For example I would like to know the price of this Product"  });
+                      return Promise.resolve({ success: true, data: answer });
+
 
 
                     } 
+
+
+              }
+              else if(priceResponsded === "Yes" || priceResponsded === "yes")
+              {
+               
+                answer.push({Question:"Can I generate your Order how many bags you would like " , HumanQuestion: "For example I would like to know the price of this Product"  });
+                return Promise.resolve({ success: true, data: answer });
+
+
 
 
               } 
@@ -479,10 +494,17 @@ console.log("start processing propmt " + prompt);
                 };
                 newMessage.push(newMsg);
                 setAnswerPriceReq(false);
+                setPriceResponded("Yes");
+
 
   
     
                 
+              }
+              else if((prompt === "Yes" || prompt === "yes")  && priceResponsded)
+              {
+                   
+
               }
 
           }

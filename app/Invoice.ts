@@ -20,3 +20,15 @@ export interface Orders
 
 
 }
+
+
+export interface RespondedAnswer
+{
+    RespondedAnswerCode: Number ,
+    RespondedAnswer: String ,
+    QuestionAsked: String ,
+    Affirmative:String ,
+   
+
+
+}
