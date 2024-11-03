@@ -37,6 +37,7 @@ import { useNavigation } from 'expo-router';
 // imeplement Login Feature with Firestore Authentication and insert that user Id in route navigation 
 const VoiceChatter = ({}) => {
   
+  const regex = /^(Yes|Confirmed|yes|Ok|OK)$/;
 
   const getDeviceLocale = () => {
     const locale = Localization.locale;
@@ -83,7 +84,7 @@ const VoiceChatter = ({}) => {
 
   let [result, setResult] = useState('');
   let [botResults,setBotResults] =useState([]);
-  const [priceResponsded,setPriceResponded ] = useState("No")
+  const [priceResponded,setPriceResponded ] = useState("Yes000")
 
 
 
@@ -222,7 +223,7 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
               if(answerPriceRequired)
               {
                    // look for Yes
-                   if(currentPrompt == "Yes" || currentPrompt == "yes" )
+                   if(regex.test(currentPrompt)  && priceResponded === "Yes000" )
                     {
                       console.log(currentPrompt);
                       data = products.filter(function(el:any) {
@@ -233,7 +234,7 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
                       answer.push({Question:"The price of " + data[0].ProductName + " Per Bag is " + data[0].PricePerBag + " each bag weighing " +  data[0].WeightPerBag   +  " would you like to order now" , HumanQuestion: "For example I would like to know the price of this Product"  });
                    //   const composedm =   answer;
                      // console.log("Message response composed as== " + answer);
-                     setPriceResponded("Yes");
+                     setPriceResponded("Yes0001");
                      setAnswerPriceReq(false);
                      return Promise.resolve({ success: true, data: answer });
 
@@ -245,20 +246,21 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
 
 
 
+                    }
+                    else if(regex.test(currentPrompt) && priceResponded === "Yes002")
+                    {
+                       
+                        answer.push({Question:"Can I generate your Order how many bags you would like " , HumanQuestion: "For example I would like to know the price of this Product"  });
+                        return Promise.resolve({ success: true, data: answer });
+        
+        
+        
+        
                     } 
+                   
 
 
               }
-              else if(priceResponsded === "Yes" || priceResponsded === "yes")
-              {
-               
-                answer.push({Question:"Can I generate your Order how many bags you would like " , HumanQuestion: "For example I would like to know the price of this Product"  });
-                return Promise.resolve({ success: true, data: answer });
-
-
-
-
-              } 
             if(products.length > 0 )
               {
           
@@ -352,7 +354,9 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
     Speech.speak(message);
   }
 
-
+  function isNumeric(value:any) {
+    return !isNaN(Number(value));
+  }
   const stopRecording = async () => {
 
     console.log("== stopRecording ");
@@ -418,6 +422,30 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
 // Replies yes 
 // Creating Order Generate Invoice 
 
+
+function wordToNumber(word:String) {
+  const numberWords = {
+    'zero': 0,
+    'one': 1,
+    'two': 2,
+    'three': 3,
+    'four': 4,
+    'five': 5,
+    'six': 6,
+    'seven': 7,
+    'eight': 8,
+    'nine': 9,
+    'ten': 10,
+    // Add more words as needed
+  };
+
+  let lowerCaseWord:any = word.toLowerCase();
+  if (numberWords.hasOwnProperty(lowerCaseWord)) {
+    return numberWords[lowerCaseWord];
+  } else {
+    return 'Number not found';
+  }
+}
 const sortAndIndexSentence = async () => {
 
 
@@ -453,6 +481,19 @@ console.log("start processing propmt " + prompt);
 
      await fetchLanguageChain(prompt.trim()).then((res: any) => {
         console.log(res.msg);
+
+        var currentNumberOfBags:any = '0' ;
+        if(isNumeric(prompt.trim()))
+        {
+          currentNumberOfBags = prompt.trim();
+        }
+        else 
+        {
+          currentNumberOfBags = wordToNumber( prompt.trim())
+        } 
+        
+
+        console.log(currentNumberOfBags);
         
         var repliedBotAnswers = [];
         if (res.success) {
@@ -463,7 +504,7 @@ console.log("start processing propmt " + prompt);
               
           for(var m= 0 ; m < repliedBotAnswers.length ; m++ )
           {
-            if((repliedBotAnswers[m].Question.toString() == prompt.trim().toString()) || repliedBotAnswers[m].Question.toString().includes(prompt.trim().toString()) )
+            if(priceResponded === "Yes000" && (repliedBotAnswers[m].Question.toString() == prompt.trim().toString()) || repliedBotAnswers[m].Question.toString().includes(prompt.trim().toString()) )
             { 
 
 
@@ -481,8 +522,9 @@ console.log("start processing propmt " + prompt);
               break;
 
             }
-            else if((prompt === "Yes" || prompt === "yes")  && answerPriceRequired)
+            else if(regex.test(prompt) && priceResponded === "Yes000")
             {
+              console.log("Step 3 conditions meet");
                 newMsg = {
                   _id: Math.round(Math.random() * 1000),
                   text: repliedBotAnswers[m].Question.toString() ,
@@ -494,18 +536,51 @@ console.log("start processing propmt " + prompt);
                 };
                 newMessage.push(newMsg);
                 setAnswerPriceReq(false);
-                setPriceResponded("Yes");
+                setPriceResponded("Yes001");
 
 
   
     
                 
               }
-              else if((prompt === "Yes" || prompt === "yes")  && priceResponsded)
+              else if(regex.test(prompt)  && priceResponded === "Yes001")
               {
-                   
+                console.log("Step 4 conditions meet");
+                newMsg = {
+                  _id: Math.round(Math.random() * 1000),
+                  text: "How may bags you wanted?" ,
+                  createdAt: new Date(),
+                  user: {
+                    _id: Math.round(Math.random() * 1000),
+                    name: 'Assistant',
+                  }
+                };
+                newMessage.push(newMsg);
+                setAnswerPriceReq(false);
+                setPriceResponded("Yes002");
+ 
 
               }
+
+              else if((currentNumberOfBags != 'Number not found'  && priceResponded === "Yes002") )
+                {
+                  console.log("Step 5 conditions meet");
+                  newMsg = {
+                    _id: Math.round(Math.random() * 1000),
+                    text: "Generating invoice for " + currentNumberOfBags + " bags of " + productName ,
+                    createdAt: new Date(),
+                    user: {
+                      _id: Math.round(Math.random() * 1000),
+                      name: 'Assistant',
+                    }
+                  };
+                  newMessage.push(newMsg);
+                  setAnswerPriceReq(false);
+                  setPriceResponded("Yes003");
+   
+  
+                }
+                
 
           }
          
