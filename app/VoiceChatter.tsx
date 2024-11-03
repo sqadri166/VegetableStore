@@ -80,10 +80,12 @@ const VoiceChatter = ({}) => {
   let [questionBank, setQuestionBank] = useState([]);
   let [answerPriceRequired,setAnswerPriceReq] = useState(false);
   let [respondedQuestion,setRepsonse] = useState([]);
-
+  let [feedModelSteps, SetModelSteps] = useState([]);
 
   let [result, setResult] = useState('');
   let [botResults,setBotResults] =useState([]);
+
+
   const [priceResponded,setPriceResponded ] = useState("Yes000")
 
 
