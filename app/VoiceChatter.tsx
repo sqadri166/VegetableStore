@@ -80,6 +80,11 @@ const VoiceChatter = ({}) => {
   let [questionBank, setQuestionBank] = useState([]);
   let [answerPriceRequired,setAnswerPriceReq] = useState(false);
   let [respondedQuestion,setRepsonse] = useState([]);
+  // Feed Model Steps Hold the State , set next step ID and and pass and got next 
+  // Update NExt Step On the basis of Yes or No 
+  // Every Model True go to next Chain Model 
+  
+
   let [feedModelSteps, SetModelSteps] = useState([]);
 
   let [result, setResult] = useState('');

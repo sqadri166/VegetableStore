@@ -1,0 +1,33 @@
+
+[ {
+    "StepID":"0001" , 
+    "StepQuestionExpected": "What would you like to Order",
+    "StepExpectedResponse": "{ProductName}|I would like to Order {ProductName}" ,
+    "StepResponse": "We have three kinds of {ProductName} Select the option Number you want " ,
+    "StepQuestionActualResponse":"None",
+    "NoCorrectResponseRepeatStep": "true",
+    "BadResponseReply": "Please ask Proper Questions click help for Question Glossary" ,
+    "NextStepIDJumpOnSuccess":"0002" ,
+    "NextStepIDJumpOnFailure":"0005" 
+   }
+    ,   
+   {
+    "StepID":"0002" , 
+    "StepQuestionExpected": "Whats the Price of {ProductName}",
+    "StepExpectedResponse": "{Product Name}|I would like to Order {ProductName}" ,
+    "StepResponse": "We have three kinds of Tomatoes select the option Number you want" ,
+    "StepQuestionActualResponse":"None",
+    "NoCorrectResponseRepeatStep": "true",
+    "BadResponseReply": "Please ask Proper Questions click help for Question Glossary" ,
+    "NextStepIDJumpOnSuccess":"0004" ,
+    "NextStepIDJumpOnFailure":"0005" 
+   }
+
+   
+
+]
+    
+
+
+
+
