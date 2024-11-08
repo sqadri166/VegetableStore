@@ -12,6 +12,9 @@ import fs from 'fs';
 
       questionFeeds:any = [];
       answers:any = [];
+      currentStep:Step | undefined ;
+      public StepAnalysisIndex:Number | undefined;
+
       public async loadModel() {
         const model = await qna.load();
 
@@ -21,56 +24,57 @@ import fs from 'fs';
       }
 
 
-      public async LoadJsonFileQuestionSteps() {
+      
+      public LoadJsonFileQuestionSteps:any =   async () => {
 
-         
-         
-         const response =  await FileSystem.readAsStringAsync("./QuestionFeed.json");
+        const response =  await FileSystem.readAsStringAsync("./QuestionFeed.json");
             
          const data = JSON.parse(response);
 
-         this.questionFeeds = data ; 
-         
+         return Promise.resolve({ success: true, data: data });
+
 
       }
 
      
      public async  answerQuestion(model:any, passage:any, question:any) {
+      // Train model to answer questions 
+
          const answers = await model.findAnswers(question, passage);
          return answers;
        
       }
        
     
-    public StepAnalysisIndex:Number | undefined
     
     // Load Steps  
-
-
-    public  FetchAndTrainAndAnswer:any = async (step:Step[]) => {
+     public  FetchAndTrainAndAnswer:any = async (step:Step[]) => {
          
-
-         const model = await this.loadModel();
-         let answer
-         this.LoadJsonFileQuestionSteps();
-         for(var i=0 ; i < this.questionFeeds.length; i++)
-         {
-            const answers = await this.answerQuestion(model, this.questionFeeds[i].StepQuestionExpected, this.questionFeeds[i].StepExpectedResponse);
-            this.answers = answers; 
-            console.log(answers);
-
-
-         }
          
-       }
-       
-
-       
-
-
-    
-
+     
    
+      const model = await this.loadModel();
+    
+      await this.LoadJsonFileQuestionSteps().then((res: any) => {
+
+          for(var i=0 ; i < res.data.length; i++)
+          {
+            
+            const answers =  this.answerQuestion(model, res.data[i].StepQuestionExpected, res.data[i].StepExpectedResponse);
+            this.answers.push(answers); 
+            
+            
+
+          }
 
 
- }
+         
+       }); 
+
+    }
+
+  }
+
+
+
+  

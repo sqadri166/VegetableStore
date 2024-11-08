@@ -31,6 +31,7 @@ import * as Speech from 'expo-speech';
 import voice from "@react-native-voice/voice";
 import { Ranking } from './Ranking';
 import { useNavigation } from 'expo-router';
+import { CustomTrianingModel } from './CustomTrainingModel';
 
 // You need to /replace it with Firebase Data 
 
@@ -225,7 +226,9 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
     const answer:any =[] ;
     var data:any = [{}];
 
-           
+     //var customtrainingmodel = new  CustomTrianingModel();
+
+                  
           try {
               if(answerPriceRequired)
               {
