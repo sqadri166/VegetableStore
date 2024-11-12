@@ -17,10 +17,14 @@ export interface Questions
 // Chain Steps
 export interface Step 
 {
-   StepID : Number,
-   StepQuestionID:Number,
-   StepDescription:String,
-   StepPassed:Boolean,
-   StepPassedCriteria:"/^(Yes|Confirmed|Ok|OK)$"
-   NextStep:Step  
+      StepID: String , 
+      StepQuestionExpected: String
+      StepContext: String
+      StepResponse: String ,
+      StepQuestionActualResponse:String,
+      NoCorrectResponseRepeatStep: String,
+      BadResponseReply: String ,
+      NextStepIDJumpOnSuccess: String ,
+      NextStepIDJumpOnFailure: String ,
+      ExpectedGrammarResponseExpression: String 
 }

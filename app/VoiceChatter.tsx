@@ -32,6 +32,7 @@ import voice from "@react-native-voice/voice";
 import { Ranking } from './Ranking';
 import { useNavigation } from 'expo-router';
 import { CustomTrianingModel } from './CustomTrainingModel';
+import { Step } from './Questions';
 
 // You need to /replace it with Firebase Data 
 
@@ -57,6 +58,24 @@ const VoiceChatter = ({}) => {
     },
   ];
 
+  const initialStep: Step[] = 
+  [
+    {
+      StepID:"0002" , 
+      StepQuestionExpected: "HEllo how can i help you",
+      StepContext:"Hello , How you doing today how can i help , I think you are Ok." ,
+      StepResponse: "The Price of each bag is {price} per {weightRefs}" ,
+      StepQuestionActualResponse:"None",
+      NoCorrectResponseRepeatStep: "true",
+      BadResponseReply: "Please ask Proper Questions click help for Question Glossary" ,
+      NextStepIDJumpOnSuccess:"0004" ,
+      NextStepIDJumpOnFailure:"0005" ,
+      ExpectedGrammarResponseExpression:"Yes|Confimed|No|Next Question"
+      } 
+
+
+  ]
+
 
   let productInformation:any = [{}];
   
@@ -68,6 +87,7 @@ const VoiceChatter = ({}) => {
 
   let [questionresponse, setQuestions] = useState('');
   let [messages, setMessages] = useState(initialMessages);
+  let [answerContext, setBuildContext] = useState(initialStep);
 
   
   let [recivedtone,setReceivedTone] =useState(false);
@@ -221,6 +241,8 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
 
  
 
+
+  
   const fetchLanguageChain:any =   async (currentPrompt:any) => {
   
     const answer:any =[] ;
@@ -271,7 +293,7 @@ const allPropertiesTrue = (currentIndexing:any , prop:any) => {
 
 
               }
-            if(products.length > 0 )
+            else if(products.length > 0 )
               {
           
                   const words = currentPrompt.split(' ');
